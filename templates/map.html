@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nearby Hospitals</title>
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Nearby Hospitals Near You</h2>
+  <div id="map"></div>
+
+  <script>
+    function initMap() {
+      // Get current location
+      navigator.geolocation.getCurrentPosition(success => {
+        const location = {
+          lat: success.coords.latitude,
+          lng: success.coords.longitude
+        };
+
+        // Create map centered on user's location
+        const map = new google.maps.Map(document.getElementById('map'), {
+          center: location,
+          zoom: 14
+        });
+
+        // Marker for user
+        new google.maps.Marker({
+          position: location,
+          map: map,
+          title: "You are here",
+          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+        });
+
+        // Search for nearby hospitals
+        const request = {
+          location: location,
+          radius: '5000',
+          type: ['hospital']
+        };
+
+        const service = new google.maps.places.PlacesService(map);
+        service.nearbySearch(request, (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            results.forEach(place => {
+              new google.maps.Marker({
+                position: place.geometry.location,
+                map: map,
+                title: place.name
+              });
+            });
+          } else {
+            alert("No hospitals found or error occurred: " + status);
+          }
+        });
+      }, () => {
+        alert("Geolocation permission is required to display nearby hospitals.");
+      });
+    }
+  </script>
+
+  <!-- ✅ Replace YOUR_API_KEY with your actual Google Maps API key -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJTUAg-oXwcL7PBLxtTzDUDsf-0JN9wYM&libraries=places&callback=initMap">
+  </script>
+</body>
+</html>
+

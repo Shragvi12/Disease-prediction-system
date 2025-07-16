@@ -1,0 +1,182 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+#navbar{
+    display:flex;
+    align-items: centre;
+    position:relative;
+    justify-content: space-between;
+}
+
+#navbar::before{
+    content:"";
+   
+    position: absolute;
+    height:100%;
+    width:100%;
+    z-index:-1;
+    opacity:0.5
+}
+
+#logo{
+    margin:10px 35px;
+
+}
+
+#logo img{
+    height: 59px;
+    margin: 3px, 6px;
+}
+
+#navbar ul{
+    display:flex;
+
+}
+
+
+#navbar ul li{
+    list-style:none;
+    font-size:1.3rem;
+
+}
+
+#navbar ul li a{
+    color: #c6dbec;
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    padding: 3px 22px;
+    border-radius: 20px;
+    margin-top: 40px;
+    text-decoration: none;
+
+}
+
+#navbar ul li a:hover{
+    color:black;
+    background-color: rgb(163, 177, 191);
+}
+
+#home{
+    display:flex;
+    flex-direction: column;
+    padding: 3px 200px;
+    height:500px;
+    justify-content: center;
+    align-items: center;
+    text-align: right;
+}
+
+#home::before{
+    content:"";
+    background-image:url('bg3.png');
+    position: absolute;
+    background-size: cover;
+    background-position: center bottom; 
+    height:100%;
+    width:100%;
+    z-index:-1;
+    opacity:0.9;
+}
+
+/* Styling for h1 */
+.main-heading {
+    font-size: 4rem; /* Increase font size */
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: #e6ecf1;  /* Nice dark blue or use any color you like */
+    text-align:center;
+    padding-left: 450px;
+    animation: fadeInSlide 2s ease-in-out forwards;
+    opacity: 0; /* Start hidden, will fade in */
+}
+
+/* Animation keyframes */
+@keyframes fadeInSlide {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.about-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 60px 100px;
+    background-color: #cfddf0;
+    gap: 50px;
+    margin-bottom: 30px;
+}
+
+/* Carousel Wrapper */
+.about-images {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Frame */
+.slider-frame {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Inner scroll */
+.image-scroll {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 100%;
+}
+
+.image-scroll img {
+    width: 100%;
+    max-width: 600px;
+    height: 350px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Navigation Arrows */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 2;
+    font-size: 24px;
+    border-radius: 50%;
+}
+
+.scroll-btn.left {
+    left: 10px;
+}
+
+.scroll-btn.right {
+    right: 10px;
+}
+
+.scroll-btn:hover {
+    background-color: rgba(0,0,0,0.8);
+}

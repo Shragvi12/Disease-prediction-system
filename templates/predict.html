@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Disease Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #f5f5f5, #002147);
+        }
+
+        .container {
+            background: rgb(197, 203, 245);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background-color: #e4e4f3;
+            resize: none;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        textarea:hover {
+            border-color: #869ed2;
+            background-color: #d0d8e9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestion-box {
+            position: absolute;
+            top: 190px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            width: 90%;
+            background-color: #c5cfee;
+            border: 1px solid #d8c6c6;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 10;
+        }
+
+        .suggestion-box.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #a7a7ee;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background-color: #d0ceed;
+            transform: translateX(10px);
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            background-color: #04141f;
+            color: rgb(172, 175, 185);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #869ed2;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Disease Prediction System</h1>
+    <form id="predictForm" action="/predict" method="POST" onsubmit="saveText(event)">
+        <textarea name="text" id="textInput" rows="5" placeholder="Describe your symptoms..." required></textarea><br>
+        <button type="submit">Predict</button>
+    </form>
+
+    <div class="suggestion-box" id="suggestionBox"></div>
+</div>
+
+<script>
+    const input = document.getElementById('textInput');
+    const suggestionBox = document.getElementById('suggestionBox');
+    let recentEntries = [];
+
+    function saveText(event) {
+        event.preventDefault();
+        const text = input.value.trim();
+        if (text !== "" && !recentEntries.includes(text)) {
+            recentEntries.unshift(text);
+            if (recentEntries.length > 10) {
+                recentEntries.pop(); // Keep last 10 entries
+            }
+        }
+        input.value = "";
+        suggestionBox.innerHTML = "";
+        suggestionBox.classList.remove('visible');
+
+        // Uncomment if submitting to backend
+        // event.target.submit();
+    }
+
+    input.addEventListener('input', () => {
+        const query = input.value.toLowerCase();
+        const filtered = recentEntries.filter(entry =>
+            entry.toLowerCase().includes(query)
+        );
+
+        if (query && filtered.length > 0) {
+            suggestionBox.innerHTML = filtered.map(item =>
+                `<div class="suggestion-item" onclick="useSuggestion('${item.replace(/'/g, "\\'")}')">${item}</div>`
+            ).join('');
+            suggestionBox.classList.add('visible');
+        } else {
+            suggestionBox.classList.remove('visible');
+            suggestionBox.innerHTML = '';
+        }
+    });
+
+    function useSuggestion(text) {
+        input.value = text;
+        suggestionBox.classList.remove('visible');
+        suggestionBox.innerHTML = '';
+    }
+</script>
+
+</body>
+</html>
+
+        

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Prediction System</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Predict Form Styling */
+        #predict {
+            background: linear-gradient(to right, #f5f5f5, #002147);
+            padding: 60px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .predict-container {
+            background: rgb(197, 203, 245);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        }
+
+        .predict-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .predict-container textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background-color: #e4e4f3;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .predict-container button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            background-color: #04141f;
+            color: rgb(172, 175, 185);
+            cursor: pointer;
+        }
+
+        .predict-container button:hover {
+            background-color: #869ed2;
+        }
+
+        .suggestion-box {
+            background-color: #c5cfee;
+            border-radius: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #a7a7ee;
+        }
+
+        .suggestion-item:hover {
+            background-color: #d0ceed;
+        }
+
+        nav ul li a {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div id="logo">
+            <img src="static/logo.png">
+        </div>
+        <ul>
+            <li class="item"><a href="#home">Home</a></li>
+            <li class="item"><a href="#about">About Us</a></li>
+            <li class="item"><a href="#predict">Predict Disease</a></li>
+        </ul>
+    </nav>
+
+    <section id="home">
+        <h1 class="main-heading">DISEASE PREDICTION SYSTEM</h1>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="about-images">
+            <button class="scroll-btn left" onclick="scrollImages(-1)">&#10094;</button>
+          
+            <div class="slider-frame">
+              <div class="image-scroll" id="imageScroll">
+                <img src="static/virus.jpg" alt="Image 1">
+                <img src="static/dna-6560897_1280.jpg" alt="Image 2">
+                <img src="static/microscope-275984_1280.jpg" alt="Image 3">
+              </div>
+            </div>
+          
+            <button class="scroll-btn right" onclick="scrollImages(1)">&#10095;</button>
+          </div>
+          
+
+        <div class="about-text">
+            <h2>How the System Works</h2>
+            <br>
+            <p>
+                Our disease prediction system uses cutting-edge algorithms to analyze symptoms and provide accurate health insights.
+                Simply input your symptoms, and our system will guide you through possible conditions and recommendations.
+            </p>
+            
+        </div>
+    </section>
+
+    <!-- PREDICTION SECTION -->
+    <section id="predict">
+        <div class="predict-container">
+            <h2>Enter Your Symptoms</h2>
+            <form id="predictForm" action="/predict" method="POST" onsubmit="saveText(event)">
+                <textarea name="text" id="textInput" rows="5" placeholder="Describe your symptoms..." required></textarea><br>
+                <button type="submit">Predict</button>
+            </form>
+            <div class="suggestion-box" id="suggestionBox"></div>
+        </div>
+    </section>
+
+    <script>
+        
+  let scrollIndex = 0;
+  const scrollContainer = document.getElementById("imageScroll");
+  const totalImages = scrollContainer.children.length;
+
+  function scrollImages(direction) {
+    scrollIndex = (scrollIndex + direction + totalImages) % totalImages;
+    scrollContainer.style.transform = `translateX(-${scrollIndex * 100}%)`;
+  }
+
+  // Auto-scroll every 3 seconds
+  setInterval(() => {
+    scrollImages(1);
+  }, 3000);
+
+
+
+        const input = document.getElementById('textInput');
+        const suggestionBox = document.getElementById('suggestionBox');
+        let recentEntries = [];
+
+        function saveText(event) {
+            const text = input.value.trim();
+            if (text !== "" && !recentEntries.includes(text)) {
+                recentEntries.unshift(text);
+                if (recentEntries.length > 10) recentEntries.pop();
+            }
+        }
+
+        input.addEventListener('input', () => {
+            const query = input.value.toLowerCase();
+            const filtered = recentEntries.filter(entry =>
+                entry.toLowerCase().includes(query)
+            );
+
+            if (query && filtered.length > 0) {
+                suggestionBox.innerHTML = filtered.map(item =>
+                    `<div class="suggestion-item" onclick="useSuggestion('${item.replace(/'/g, "\\'")}')">${item}</div>`
+                ).join('');
+                suggestionBox.style.display = "block";
+            } else {
+                suggestionBox.style.display = "none";
+            }
+        });
+
+        function useSuggestion(text) {
+            input.value = text;
+            suggestionBox.style.display = "none";
+        }
+    </script>
+</body>
+</html>
